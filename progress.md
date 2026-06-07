@@ -61,6 +61,22 @@ which falls back to a labeled placeholder if a file is ever missing.
 
 Originals are also kept in [`images/`](images/) (the raw ChatGPT exports).
 
+### Background cut-out
+
+The raw exports had **no real transparency** — their "transparent" look was a
+light-grey checkerboard baked into the pixels, which showed as a box behind each
+image. [`scripts/cut-bg.py`](scripts/cut-bg.py) fixes this: it keys out the
+light/neutral checker region connected to the image border and writes a real
+alpha channel, while preserving white areas *inside* a subject. The files in
+`public/assets/` are the cut-out versions. Re-run it after dropping a freshly
+exported image in:
+
+```bash
+python3 -m venv .venv && ./.venv/bin/pip install pillow numpy scipy
+./.venv/bin/python scripts/cut-bg.py            # all assets
+./.venv/bin/python scripts/cut-bg.py teapot     # or just one
+```
+
 **Still drawn in code (no image needed):**
 
 - **Card faces** — [`Card.tsx`](src/components/Card.tsx) `CardFace`: rank + suit
