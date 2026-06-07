@@ -76,6 +76,7 @@ export function LeaderboardPage() {
               src="players.png"
               label="Four friends playing Kort around a table"
               className="invite__img"
+              fit="contain"
             />
           </div>
           <div className="invite__copy">

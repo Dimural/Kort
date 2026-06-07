@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Ornament } from '../components/Ornament'
 import { AssetImage } from '../components/AssetImage'
 
 const NAV = [
@@ -51,7 +50,7 @@ export function LobbyPage() {
               className={`mode ${mode === 'classic' ? 'is-selected' : ''}`}
               onClick={() => setMode('classic')}
             >
-              <Ornament size={56} color="var(--c-blue)" />
+              <AssetImage src="medallion.png" label="Classic" className="mode__art" fit="contain" />
               <div className="mode__name">Classic</div>
               <p className="mode__desc">The original Kort experience.</p>
             </button>
@@ -60,7 +59,7 @@ export function LobbyPage() {
               className={`mode ${mode === 'relaxed' ? 'is-selected' : ''}`}
               onClick={() => setMode('relaxed')}
             >
-              <AssetImage src="icon-teapot.png" label="Teapot" className="mode__art" />
+              <AssetImage src="teapot.png" label="Relaxed" className="mode__art" fit="contain" />
               <div className="mode__name">Relaxed</div>
               <p className="mode__desc">A relaxed game for casual fun.</p>
             </button>

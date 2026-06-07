@@ -1,14 +1,14 @@
-import { Ornament } from './Ornament'
-
 /**
- * Logo — terracotta medallion + "Kort" wordmark in the display serif.
- * `tone` lets the footer render a navy/quiet variant if needed.
+ * Logo — the Kort wordmark (terracotta medallion + navy "Kort").
+ * Uses the supplied logo artwork; `height` controls its rendered size.
  */
-export function Logo({ size = 34 }: { size?: number }) {
+export function Logo({ height = 38 }: { height?: number }) {
   return (
-    <span className="logo">
-      <Ornament size={size} color="var(--c-accent)" />
-      <span className="logo__word">Kort</span>
-    </span>
+    <img
+      src="/assets/logo.png"
+      alt="Kort"
+      className="logo"
+      style={{ height }}
+    />
   )
 }

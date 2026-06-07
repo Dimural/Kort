@@ -2,37 +2,41 @@ import { useState } from 'react'
 
 /**
  * AssetImage — renders an illustration from /public/assets/.
- * Until the real file exists (or if it fails to load), it shows a labeled,
- * theme-matched placeholder box so the layout holds together. Drop the named
- * file into /public/assets/ and it appears automatically.
+ * If the file is missing or fails to load, it falls back to a labeled,
+ * theme-matched placeholder box so the layout still holds.
  *
- * The expected filenames are documented in progress.md.
+ * `fit` controls object-fit: "contain" for artwork with transparent margins
+ * (logos, framed boards, cutout illustrations), "cover" for full-bleed photos.
  */
 type AssetImageProps = {
-  /** filename inside /public/assets/, e.g. "hero-table.png" */
   src: string
-  /** human label shown on the placeholder + used as alt text */
   label: string
   className?: string
+  fit?: 'cover' | 'contain'
 }
 
-export function AssetImage({ src, label, className = '' }: AssetImageProps) {
+export function AssetImage({ src, label, className = '', fit = 'cover' }: AssetImageProps) {
   const [failed, setFailed] = useState(false)
-  return (
-    <div className={`asset-ph ${className}`}>
-      {!failed && (
-        <img
-          src={`/assets/${src}`}
-          alt={label}
-          onError={() => setFailed(true)}
-        />
-      )}
-      {failed && (
+
+  if (failed) {
+    return (
+      <div className={`asset-ph asset-ph--empty ${className}`}>
         <span>
           {label}
           <br />/assets/{src}
         </span>
-      )}
+      </div>
+    )
+  }
+
+  return (
+    <div className={`asset-ph ${className}`}>
+      <img
+        src={`/assets/${src}`}
+        alt={label}
+        style={{ objectFit: fit }}
+        onError={() => setFailed(true)}
+      />
     </div>
   )
 }

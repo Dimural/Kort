@@ -61,9 +61,10 @@ export function LandingPage() {
 
         <div className="hero__art">
           <AssetImage
-            src="hero-table.png"
-            label="Hero — ornate gold-framed Kort board with card layout"
+            src="hero-board.png"
+            label="Hero — ornate gold-framed Kort board"
             className="hero__board"
+            fit="contain"
           />
         </div>
       </section>
@@ -103,6 +104,7 @@ export function LandingPage() {
           src="landscape.png"
           label="Watercolor Uyghur landscape — mosques, mountains, blossoms"
           className="landscape__img"
+          fit="cover"
         />
       </section>
 

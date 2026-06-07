@@ -1,16 +1,19 @@
 # Kort image assets
 
-Drop the real illustration files here. Each filename below maps to a slot in
-the UI; until a file exists, the app shows a labeled placeholder box in its
-place (no broken images). File appears automatically once added — no code change
-needed.
+These are the supplied illustrations, each wired into a UI slot via
+`AssetImage`. If a file is removed, its slot shows a labeled placeholder box
+(no broken image).
 
-| Filename         | Where it's used                  | Suggested size      | Description                                                            |
-| ---------------- | -------------------------------- | ------------------- | ---------------------------------------------------------------------- |
-| `hero-table.png` | Landing hero (right of "Kort")   | ~760×700 (square-ish) | Ornate gold-framed Kort board with the card layout, teal felt.        |
-| `landscape.png`  | Landing footer banner            | ~2400×440 (wide)    | Watercolor Uyghur landscape: mosques, mountains, blossoms.            |
-| `players.png`    | Leaderboard invite banner        | ~700×520            | Four friends playing Kort around a table.                             |
-| `icon-teapot.png`| Lobby "Relaxed" game-mode card   | ~120×120            | Stylized teapot icon for the relaxed mode.                            |
+| File             | Where it's used                  | Notes                          |
+| ---------------- | -------------------------------- | ------------------------------ |
+| `logo.png`       | Top nav + footer brand mark      | medallion + "Kort" wordmark    |
+| `hero-board.png` | Landing hero (right of "Kort")   | gold-framed teal board         |
+| `table-felt.png` | Game table surface               | oval cream felt (CSS bg)       |
+| `card-back.png`  | Every face-down card             | blue ornamented back           |
+| `landscape.png`  | Landing footer banner            | watercolor Uyghur landscape    |
+| `players.png`    | Leaderboard invite banner        | four friends playing           |
+| `medallion.png`  | Lobby "Classic" mode icon        | blue geometric flower          |
+| `teapot.png`     | Lobby "Relaxed" mode icon        | gold teapot                    |
 
-PNG with transparency is fine where it helps. Cards, the logo medallion, and the
-ornament motifs are drawn in code (SVG/CSS) and do **not** need image files.
+To replace any artwork, drop a new PNG with the same filename here.
+Card faces and the small hero ornament/favicon are drawn in code (SVG).

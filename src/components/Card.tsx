@@ -1,5 +1,3 @@
-import { Ornament } from './Ornament'
-
 export type Suit = 'spades' | 'hearts' | 'diamonds' | 'clubs'
 
 const SUIT_GLYPH: Record<Suit, string> = {
@@ -49,16 +47,14 @@ type CardBackProps = {
   className?: string
 }
 
-/** A face-down card: blue field with the gold Kort medallion. */
+/** A face-down card: the supplied blue ornamented card-back artwork. */
 export function CardBack({ rotate = 0, className = '' }: CardBackProps) {
   return (
     <div
       className={`card card-back ${className}`}
       style={{ '--rot': `${rotate}deg` } as React.CSSProperties}
     >
-      <div className="card-back__inner">
-        <Ornament size={34} color="var(--c-gold-light)" />
-      </div>
+      <img src="/assets/card-back.png" alt="" className="card-back__art" />
     </div>
   )
 }

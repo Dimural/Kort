@@ -42,27 +42,31 @@ Central design tokens in [`src/styles/theme.css`](src/styles/theme.css):
 - Cards/board: teal felt `#5a86a2`, blue card backs `#3f6f8e`, gold ornament
   borders `#c7a567`. Lavender invite banner.
 
-## Code-drawn vs. image assets
+## Image assets (supplied, wired in)
 
-**Drawn in code (SVG/CSS) — no files needed:**
+The 8 supplied illustrations live in [`public/assets/`](public/assets/) and are
+each wired into their slot. Slots load via [`AssetImage.tsx`](src/components/AssetImage.tsx),
+which falls back to a labeled placeholder if a file is ever missing.
 
-- The **Kort medallion** (8-petal Uyghur geometric star) — [`Ornament.tsx`](src/components/Ornament.tsx),
-  reused in the logo, card backs, lobby "Classic" icon, and favicon.
-- **Playing cards** — [`Card.tsx`](src/components/Card.tsx): `CardFace` (rank +
-  suit, red/black) and `CardBack` (blue gold-bordered pattern). Used for the
-  hand (A♠ K♦ Q♣ J♥ 10♠), the trick (9♥), and all face-down stacks.
+| File              | Slot                              | `fit`     |
+| ----------------- | --------------------------------- | --------- |
+| `logo.png`        | Brand logo (top nav + footer)     | —         |
+| `hero-board.png`  | Landing hero — gold-framed board  | contain   |
+| `table-felt.png`  | Game table surface (oval felt)    | bg-image  |
+| `card-back.png`   | Every face-down card              | cover     |
+| `landscape.png`   | Landing footer banner             | cover     |
+| `players.png`     | Leaderboard invite banner         | contain   |
+| `medallion.png`   | Lobby "Classic" mode icon         | contain   |
+| `teapot.png`      | Lobby "Relaxed" mode icon         | contain   |
 
-**Real illustrations to be supplied** — drop into
-[`public/assets/`](public/assets/) (see [its README](public/assets/README.md)).
-Until a file exists, a labeled, theme-matched placeholder shows in its slot via
-[`AssetImage.tsx`](src/components/AssetImage.tsx):
+Originals are also kept in [`images/`](images/) (the raw ChatGPT exports).
 
-| File              | Slot                          |
-| ----------------- | ----------------------------- |
-| `hero-table.png`  | Landing hero board            |
-| `landscape.png`   | Landing footer banner         |
-| `players.png`     | Leaderboard invite banner     |
-| `icon-teapot.png` | Lobby "Relaxed" mode icon     |
+**Still drawn in code (no image needed):**
+
+- **Card faces** — [`Card.tsx`](src/components/Card.tsx) `CardFace`: rank + suit
+  (red/black), used for the hand (A♠ K♦ Q♣ J♥ 10♠) and the trick (9♥).
+- **Ornament SVG** — [`Ornament.tsx`](src/components/Ornament.tsx): the small
+  decorative medallion above the hero title, plus the favicon.
 
 ## File map
 
@@ -84,7 +88,6 @@ public/
 - No game logic, turns, dealing, scoring, or state.
 - No backend / multiplayer / accounts. Nav links and tabs are visual only
   (mode select and leaderboard tabs toggle locally; others are inert).
-- Real illustration files not included — placeholders stand in.
 
 ## Suggested next steps
 
