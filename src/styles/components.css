@@ -1,0 +1,117 @@
+/* ==========================================================================
+   Kort — Shared component styles (logo, cards)
+   ========================================================================== */
+
+/* ---- Logo ---- */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo__word {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: var(--c-ink);
+  letter-spacing: -0.01em;
+}
+
+/* ==========================================================================
+   Playing cards
+   ========================================================================== */
+.card {
+  --rot: 0deg;
+  position: relative;
+  width: var(--card-w, 64px);
+  height: var(--card-h, 92px);
+  border-radius: var(--r-card);
+  transform: rotate(var(--rot));
+  flex: 0 0 auto;
+  user-select: none;
+}
+
+/* ---- Face-up card ---- */
+.card-face {
+  background: #fffdf9;
+  border: 1px solid #ece3d2;
+  box-shadow: var(--sh-card);
+  display: grid;
+}
+.card--red {
+  color: var(--c-suit-red);
+}
+.card--black {
+  color: var(--c-suit-black);
+}
+
+.card-face__corner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 0.95;
+}
+.card-face__corner--tl {
+  top: 6px;
+  left: 7px;
+}
+.card-face__corner--br {
+  bottom: 6px;
+  right: 7px;
+  transform: rotate(180deg);
+}
+.card-face__rank {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.card-face__suit {
+  font-size: 0.78rem;
+  margin-top: 1px;
+}
+.card-face__pip {
+  align-self: center;
+  justify-self: center;
+  font-size: 1.9rem;
+  line-height: 1;
+}
+
+/* ---- Face-down card (back) ---- */
+.card-back {
+  background: linear-gradient(160deg, var(--c-cardback), var(--c-cardback-deep));
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: var(--sh-card);
+  padding: 4px;
+}
+.card-back__inner {
+  width: 100%;
+  height: 100%;
+  border: 1.5px solid var(--c-gold);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(199, 165, 103, 0.10) 0 6px, transparent 6px 12px),
+    repeating-linear-gradient(-45deg, rgba(199, 165, 103, 0.10) 0 6px, transparent 6px 12px);
+}
+
+/* hand cards lift on hover */
+.card--raise {
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+.card--raise:hover {
+  transform: rotate(var(--rot)) translateY(-12px);
+  box-shadow: 0 14px 26px rgba(23, 53, 82, 0.26);
+  z-index: 5;
+}
+
+/* size modifiers */
+.card.card--sm {
+  --card-w: 44px;
+  --card-h: 64px;
+}
+.card.card--lg {
+  --card-w: 84px;
+  --card-h: 120px;
+}

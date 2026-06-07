@@ -1,0 +1,62 @@
+/* ==========================================================================
+   Kort — Design Tokens
+   Warm, traditional Uyghur card-game theme: cream paper, deep navy ink,
+   teal-blue cards with gold ornament borders, terracotta accents.
+   ========================================================================== */
+
+:root {
+  /* ---- Surfaces / paper ---- */
+  --c-paper: #faf5ea;          /* main app background (warm cream) */
+  --c-paper-2: #f4ecdb;        /* slightly deeper cream panels */
+  --c-surface: #fffdf7;        /* raised cards / sheets */
+  --c-surface-line: #ece2cf;   /* hairline borders on cream */
+
+  /* ---- Ink / text ---- */
+  --c-ink: #173552;            /* deep navy — headings, logo, nav */
+  --c-ink-soft: #3c5871;       /* secondary navy text */
+  --c-muted: #8a9bab;          /* muted captions / meta */
+
+  /* ---- Brand accents ---- */
+  --c-accent: #e0764f;         /* terracotta / coral — primary CTA */
+  --c-accent-ink: #c25a36;     /* darker terracotta for hover */
+  --c-blue: #2f6f9e;           /* leaderboard tab / find-match blue */
+  --c-blue-ink: #235880;       /* hover for blue */
+
+  /* ---- Cards & ornament ---- */
+  --c-felt: #5a86a2;           /* teal felt of the game board */
+  --c-felt-deep: #46728e;      /* deeper felt shadow */
+  --c-cardback: #3f6f8e;       /* blue patterned card back */
+  --c-cardback-deep: #2f5a76;
+  --c-gold: #c7a567;           /* gold ornament border */
+  --c-gold-soft: #d8c08a;      /* mid gold */
+  --c-gold-light: #e6d4a8;     /* light gold highlight */
+
+  /* ---- Suit colors ---- */
+  --c-suit-red: #c8442f;
+  --c-suit-black: #1c2b38;
+
+  /* ---- Lavender invite banner ---- */
+  --c-lav-1: #ece6f6;
+  --c-lav-2: #e3dbf2;
+  --c-lav-ink: #3d3357;
+
+  /* ---- Typography ---- */
+  --font-display: 'Fraunces', 'Georgia', serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* ---- Radii ---- */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 26px;
+  --r-card: 10px;
+
+  /* ---- Shadows ---- */
+  --sh-sm: 0 1px 3px rgba(23, 53, 82, 0.08);
+  --sh-md: 0 6px 18px rgba(23, 53, 82, 0.10);
+  --sh-lg: 0 18px 50px rgba(23, 53, 82, 0.16);
+  --sh-card: 0 4px 10px rgba(23, 53, 82, 0.18);
+
+  /* ---- Layout ---- */
+  --maxw: 1180px;
+}

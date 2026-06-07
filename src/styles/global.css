@@ -1,0 +1,179 @@
+/* ==========================================================================
+   Kort — Global base styles
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--c-ink);
+  background-color: var(--c-paper);
+  /* faint paper grain + warm wash */
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(199, 165, 103, 0.06), transparent 38%),
+    radial-gradient(circle at 88% 92%, rgba(47, 111, 158, 0.05), transparent 42%);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  color: var(--c-ink);
+  margin: 0;
+  font-weight: 600;
+}
+
+p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ---- Reusable buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: var(--r-md);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 12px 22px;
+  transition: transform 0.12s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-accent {
+  background: var(--c-accent);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(224, 118, 79, 0.32);
+}
+.btn-accent:hover {
+  background: var(--c-accent-ink);
+}
+
+.btn-blue {
+  background: var(--c-blue);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(47, 111, 158, 0.28);
+}
+.btn-blue:hover {
+  background: var(--c-blue-ink);
+}
+
+.btn-ghost {
+  background: var(--c-surface);
+  color: var(--c-ink);
+  border: 1px solid var(--c-surface-line);
+  box-shadow: var(--sh-sm);
+}
+.btn-ghost:hover {
+  background: #fff;
+  border-color: var(--c-gold-soft);
+}
+
+/* ---- Generic raised panel / card ---- */
+.panel {
+  background: var(--c-surface);
+  border: 1px solid var(--c-surface-line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-md);
+}
+
+/* ---- Section heading flourish (✦ Why you'll love Kort ✦) ---- */
+.flourish-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--c-ink);
+  font-family: var(--font-display);
+}
+.flourish-heading::before,
+.flourish-heading::after {
+  content: '✦';
+  color: var(--c-gold);
+  font-size: 0.8em;
+}
+
+/* ---- Image placeholder (until real assets are dropped in) ---- */
+.asset-ph {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--c-ink-soft);
+  background:
+    linear-gradient(135deg, var(--c-paper-2), var(--c-surface));
+  border: 1px dashed var(--c-gold-soft);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.asset-ph span {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  padding: 8px;
+}
+/* When a real <img> loads inside, it covers the placeholder text */
+.asset-ph img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- Utility ---- */
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 28px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}

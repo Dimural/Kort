@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/components/assetimage.tsx","./src/components/card.tsx","./src/components/logo.tsx","./src/components/ornament.tsx","./src/components/topnav.tsx","./src/pages/gametablepage.tsx","./src/pages/landingpage.tsx","./src/pages/leaderboardpage.tsx","./src/pages/lobbypage.tsx"],"version":"5.9.3"}
