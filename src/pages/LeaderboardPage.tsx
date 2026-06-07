@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AssetImage } from '../components/AssetImage'
+import { Icon } from '../components/Icon'
 
 type Row = { rank: number; name: string; rating: number; you?: boolean }
 
@@ -89,7 +90,7 @@ export function LeaderboardPage() {
               Kort is more than a game — it's a tradition we play together.
             </p>
             <Link to="/lobby" className="btn btn-ghost invite__btn">
-              👥 Invite Friends
+              <Icon name="user-plus" size={17} /> Invite Friends
             </Link>
           </div>
         </section>

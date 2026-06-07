@@ -5,3 +5,9 @@ dist-ssr
 .DS_Store
 .vite
 .venv
+
+# Claude / progress / skill docs (not part of the codebase)
+progress.md
+.impeccable.md
+CLAUDE.md
+**/CLAUDE.md

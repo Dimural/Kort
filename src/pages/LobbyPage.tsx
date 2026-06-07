@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AssetImage } from '../components/AssetImage'
+import { Icon, type IconName } from '../components/Icon'
 
-const NAV = [
-  { icon: '🎴', label: 'Play', key: 'play' },
-  { icon: '👥', label: 'Friends', key: 'friends' },
-  { icon: '👤', label: 'Profile', key: 'profile' },
-  { icon: '🏆', label: 'Leaderboard', key: 'leaderboard' },
-  { icon: '⚙️', label: 'Settings', key: 'settings' },
+const NAV: { icon: IconName; label: string; key: string }[] = [
+  { icon: 'cards', label: 'Play', key: 'play' },
+  { icon: 'users', label: 'Friends', key: 'friends' },
+  { icon: 'user', label: 'Profile', key: 'profile' },
+  { icon: 'trophy', label: 'Leaderboard', key: 'leaderboard' },
+  { icon: 'gear', label: 'Settings', key: 'settings' },
 ]
 
 export function LobbyPage() {
@@ -24,7 +25,9 @@ export function LobbyPage() {
               const isLeaderboard = item.key === 'leaderboard'
               const content = (
                 <span className={`lobby__navitem ${item.key === 'play' ? 'is-active' : ''}`}>
-                  <span className="lobby__navicon">{item.icon}</span>
+                  <span className="lobby__navicon">
+                    <Icon name={item.icon} size={19} />
+                  </span>
                   {item.label}
                 </span>
               )
