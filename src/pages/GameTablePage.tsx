@@ -1,66 +1,34 @@
-import { Link } from 'react-router-dom'
-import { CardFace, CardBack, type Suit } from '../components/Card'
+import { useGameStore } from '../store/gameStore'
+import { HomePanel } from '../components/HomePanel'
+import { LobbyView } from '../components/lobby/LobbyView'
+import { GameBoard } from '../components/game/GameBoard'
+import { DisconnectOverlay } from '../components/shared/DisconnectOverlay'
 
-// The player's own fanned hand (bottom of table)
-const HAND: { rank: string; suit: Suit }[] = [
-  { rank: 'A', suit: 'spades' },
-  { rank: 'K', suit: 'diamonds' },
-  { rank: 'Q', suit: 'clubs' },
-  { rank: 'J', suit: 'hearts' },
-  { rank: '10', suit: 'spades' },
-]
-
+// Live, connection-driven container. Renders the right screen for the current phase.
 export function GameTablePage() {
-  return (
-    <div className="table-page">
-      <Link to="/lobby" className="table-page__back btn btn-ghost btn--sm">
-        ← Lobby
-      </Link>
+  const { game, roomCode, disconnectedPlayer } = useGameStore()
 
-      <div className="felt">
-        {/* top opponent — face-down row */}
-        <div className="seat seat--top">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <CardBack key={i} className="card--sm" />
-          ))}
-        </div>
-
-        {/* left opponent — face-down stack */}
-        <div className="seat seat--left">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <CardBack key={i} className="card--sm" />
-          ))}
-        </div>
-
-        {/* right opponent — face-down stack */}
-        <div className="seat seat--right">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <CardBack key={i} className="card--sm" />
-          ))}
-        </div>
-
-        {/* center trick area */}
-        <div className="trick">
-          <CardBack />
-          <CardFace rank="9" suit="hearts" />
-        </div>
-
-        {/* player's hand — fanned, face-up */}
-        <div className="seat seat--bottom">
-          {HAND.map((c, i) => {
-            const rotate = (i - (HAND.length - 1) / 2) * 7
-            return (
-              <CardFace
-                key={`${c.rank}${c.suit}`}
-                rank={c.rank}
-                suit={c.suit}
-                rotate={rotate}
-                raise
-              />
-            )
-          })}
-        </div>
+  if (!game) {
+    return (
+      <div className="table-page table-page--center">
+        {roomCode ? <p className="home-panel__status">Reconnecting to {roomCode}…</p> : <HomePanel />}
       </div>
-    </div>
+    )
+  }
+
+  return (
+    <>
+      {game.phase === 'lobby' ? (
+        <div className="table-page table-page--center">
+          <LobbyView game={game} />
+        </div>
+      ) : (
+        <GameBoard game={game} />
+      )}
+
+      {disconnectedPlayer && game.phase !== 'end' && game.phase !== 'lobby' && (
+        <DisconnectOverlay name={disconnectedPlayer.displayName} />
+      )}
+    </>
   )
 }

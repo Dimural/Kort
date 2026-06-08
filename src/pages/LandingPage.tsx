@@ -61,7 +61,7 @@ export function LandingPage() {
             Uyghur card game. Smart moves, good teamwork, great times!
           </p>
           <div className="hero__cta">
-            <Link to="/lobby" className="btn btn-accent">
+            <Link to="/play" className="btn btn-accent">
               Play Now
             </Link>
             <Link to="/play" className="btn btn-ghost">
