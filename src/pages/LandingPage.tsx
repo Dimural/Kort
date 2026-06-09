@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { TopNav } from '../components/TopNav'
-import { Logo } from '../components/Logo'
 import { AssetImage } from '../components/AssetImage'
 import { CardBack } from '../components/Card'
 
@@ -24,6 +23,15 @@ const STATS: { value: string; label: string }[] = [
 export function LandingPage() {
   return (
     <div className="landing">
+      {/* Landscape sits behind everything as grounding scenery; its
+          transparent sky blends the content into the page. */}
+      <img
+        src="/assets/landscape.png"
+        alt=""
+        className="landing__scape"
+        aria-hidden="true"
+      />
+
       <TopNav />
 
       {/* ---- Hero ---- */}
@@ -67,22 +75,6 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ---- Landscape banner ---- */}
-      <section className="landscape">
-        <img
-          src="/assets/landscape.png"
-          alt="Watercolor Uyghur landscape — mosques, mountains, blossoms"
-          className="landscape__img"
-        />
-      </section>
-
-      {/* ---- Footer ---- */}
-      <footer className="footer">
-        <div className="container footer__inner">
-          <Logo />
-          <span className="footer__copy">© 2024 Kort</span>
-        </div>
-      </footer>
     </div>
   )
 }

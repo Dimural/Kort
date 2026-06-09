@@ -22,14 +22,44 @@
 }
 
 /* ==========================================================================
+   LANDING — SHELL + BACKGROUND SCENERY
+   ========================================================================== */
+.landing {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+/* Landscape watercolor pinned to the bottom, behind all content. Its
+   transparent sky melts into the cream page so content floats over it. */
+.landing__scape {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+.landing > .topnav,
+.landing > .hero {
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================================================
    LANDING — HERO
    ========================================================================== */
 .hero {
+  flex: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: clamp(40px, 6vw, 88px);
   align-items: center;
-  padding-top: clamp(40px, 7vw, 88px);
+  padding-top: clamp(32px, 5vw, 64px);
   padding-bottom: clamp(48px, 7vw, 96px);
 }
 .hero__copy {
@@ -184,37 +214,6 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-
-/* ==========================================================================
-   LANDING — LANDSCAPE BANNER
-   ========================================================================== */
-.landscape {
-  margin-top: clamp(16px, 3vw, 32px);
-}
-.landscape__img {
-  display: block;
-  width: 100%;
-  height: auto;        /* natural aspect — whole scene visible, no cropping */
-}
-
-/* ==========================================================================
-   LANDING — FOOTER
-   ========================================================================== */
-.footer {
-  background: var(--c-paper-2);
-  border-top: 1px solid var(--c-surface-line);
-  padding: 28px 0;
-}
-.footer__inner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-}
-.footer__copy {
-  font-size: 0.82rem;
-  color: var(--c-muted);
 }
 
 /* ==========================================================================
