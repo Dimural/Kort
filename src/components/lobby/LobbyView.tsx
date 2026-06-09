@@ -67,7 +67,7 @@ export function LobbyView({ game }: { game: ClientState }) {
         {me?.isReady ? 'Cancel Ready' : 'Ready'}
       </button>
 
-      <p className="lobby-live__hint">The game starts automatically when all 4 players are ready.</p>
+      <p className="lobby-live__hint">Starts automatically once everyone is ready.</p>
       {error && <p className="home-panel__error">{error}</p>}
     </div>
   )

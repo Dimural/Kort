@@ -12,7 +12,7 @@ export function HomePanel() {
   return (
     <div className="home-panel panel">
       <h2 className="home-panel__title">Kort</h2>
-      <p className="home-panel__sub">2v2 trick-taking. Gather four players to begin.</p>
+      <p className="home-panel__sub">Create a room, or join with a code.</p>
 
       <label className="field">
         <span className="field__label">Your name</span>

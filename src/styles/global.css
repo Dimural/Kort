@@ -116,22 +116,6 @@ img {
   box-shadow: var(--sh-md);
 }
 
-/* ---- Section heading flourish (✦ Why you'll love Kort ✦) ---- */
-.flourish-heading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  color: var(--c-ink);
-  font-family: var(--font-display);
-}
-.flourish-heading::before,
-.flourish-heading::after {
-  content: '✦';
-  color: var(--c-gold);
-  font-size: 0.8em;
-}
-
 /* ---- Image slot ---- */
 .asset-ph {
   position: relative;

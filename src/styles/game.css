@@ -15,24 +15,28 @@
 }
 .home-panel {
   width: min(420px, 100%);
-  padding: 32px;
+  padding: 40px 36px;
   text-align: center;
 }
 .home-panel__title {
   font-family: 'Fraunces', serif;
-  font-size: 2.4rem;
+  font-size: 2.8rem;
+  letter-spacing: -0.01em;
   color: #173552;
   margin: 0;
 }
 .home-panel__sub {
   color: #5a6b7a;
-  margin: 6px 0 22px;
+  margin: 8px 0 28px;
 }
 .home-panel__actions {
   display: flex;
   gap: 12px;
   justify-content: center;
-  margin-top: 14px;
+  margin-top: 18px;
+}
+.home-panel__actions .btn {
+  flex: 1;
 }
 .home-panel__join {
   display: flex;
@@ -116,7 +120,7 @@
 /* ---- Lobby ---- */
 .lobby-live {
   width: min(560px, 100%);
-  padding: 30px;
+  padding: 40px 36px;
   text-align: center;
 }
 .lobby-live__teams {
@@ -124,7 +128,7 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 .lobby-live__vs {
   font-family: 'Fraunces', serif;
@@ -418,5 +422,31 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* ---- Restrained entrance: panels settle in on mount ---- */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.home-panel,
+.lobby-live,
+.modal,
+.declare {
+  animation: rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-panel,
+  .lobby-live,
+  .modal,
+  .declare {
+    animation: none;
   }
 }
