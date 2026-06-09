@@ -93,6 +93,11 @@
 }
 
 /* size modifiers */
+.card.card--xs {
+  --card-w: 32px;
+  --card-h: 46px;
+  --r-card: 6px;
+}
 .card.card--sm {
   --card-w: 44px;
   --card-h: 64px;

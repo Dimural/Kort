@@ -78,6 +78,14 @@ img {
 .btn:active {
   transform: translateY(1px);
 }
+.btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+  box-shadow: none;
+}
+.btn:disabled:active {
+  transform: none;
+}
 
 .btn-accent {
   background: var(--c-accent);

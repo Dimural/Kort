@@ -203,206 +203,715 @@
   margin-top: 12px;
 }
 
-/* ---- Board HUD ---- */
-.board-hud {
-  position: absolute;
-  top: 22px;
-  right: 22px;
+/* ==========================================================================
+   GAME PAGE — top bar, board, seats, trick, hand
+   ========================================================================== */
+.game {
+  --card-w: clamp(50px, 7vw, 66px);
+  --card-h: calc(var(--card-w) * 1.44);
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-  z-index: 5;
+  overflow: hidden;
+  background: radial-gradient(ellipse 70% 55% at 50% 44%, rgba(199, 165, 103, 0.12), transparent 70%);
 }
+
+/* ---- Top bar ---- */
+.game__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  flex-wrap: wrap;
+  z-index: 6;
+}
+.game__bar-side {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+.game__bar-side--right {
+  gap: var(--space-sm);
+}
+
+.codechip {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--c-ink);
+  background: var(--c-surface);
+  border: 1px solid var(--c-gold-soft);
+  border-radius: var(--r-sm);
+  padding: 7px 12px;
+  cursor: copy;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.codechip:hover {
+  border-color: var(--c-gold);
+  box-shadow: var(--sh-sm);
+}
+
+.iconbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--c-surface-line);
+  background: var(--c-surface);
+  color: var(--c-ink-soft);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.iconbtn:hover {
+  border-color: var(--c-gold-soft);
+  color: var(--c-ink);
+}
+
+.leave-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--c-ink);
+  background: var(--c-surface);
+  border: 1px solid var(--c-gold-soft);
+  border-radius: var(--r-md);
+  padding: 5px 6px 5px 12px;
+}
+.leave-confirm__yes {
+  background: var(--c-accent);
+  color: #fffdf7;
+}
+.leave-confirm__yes:hover {
+  background: var(--c-accent-ink);
+}
+
 .suitbadge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  background: #fff;
-  border: 1px solid rgba(199, 165, 103, 0.6);
+  gap: 9px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-gold-soft);
   border-radius: 999px;
-  padding: 6px 14px;
-  font-weight: 600;
-  color: #173552;
+  padding: 4px 14px 4px 10px;
+  color: var(--c-ink);
 }
 .suitbadge__glyph {
-  font-size: 1.3rem;
+  font-size: 1.45rem;
+  line-height: 1;
 }
-.suitbadge--hearts .suitbadge__glyph,
-.suitbadge--diamonds .suitbadge__glyph {
-  color: #c0492b;
+.suitbadge--red .suitbadge__glyph {
+  color: var(--c-suit-red);
 }
-.trickcounters {
+.suitbadge__text {
   display: flex;
-  gap: 8px;
-}
-.trickcounter {
-  font-size: 0.82rem;
+  flex-direction: column;
+  line-height: 1.1;
   font-weight: 700;
-  padding: 5px 10px;
-  border-radius: 8px;
-  background: #fff;
-  border: 1px solid rgba(23, 53, 82, 0.15);
+  font-size: 0.86rem;
 }
-.trickcounter--a {
-  color: #2f6f9e;
-}
-.trickcounter--b {
-  color: #e0764f;
-}
-.turn-banner {
-  position: absolute;
-  top: 22px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #173552;
-  color: #faf5ea;
-  padding: 6px 18px;
-  border-radius: 999px;
+.suitbadge__text small {
   font-weight: 600;
-  z-index: 5;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-muted);
 }
 
-/* ---- Seats (opponents) ---- */
-.seat__label {
-  font-size: 0.78rem;
-  color: #faf5ea;
-  background: rgba(23, 53, 82, 0.55);
-  padding: 2px 8px;
-  border-radius: 6px;
-  white-space: nowrap;
+.scoreboard {
+  display: flex;
+  gap: var(--space-sm);
+  background: var(--c-surface);
+  border: 1px solid var(--c-surface-line);
+  border-radius: var(--r-md);
+  padding: 6px 12px;
 }
-.seat__count {
-  opacity: 0.8;
+.scorepips {
+  display: flex;
+  align-items: center;
+  gap: 7px;
 }
-.seat--top,
-.seat--left,
-.seat--right {
+.scorepips__label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--c-ink);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.scorepips__label em {
+  font-style: normal;
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+}
+.scorepips__dots {
+  display: inline-flex;
+  gap: 4px;
+}
+.scorepips__dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid var(--c-gold-soft);
+  background: transparent;
+  transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+.scorepips--a .scorepips__dots i.is-won {
+  background: var(--c-blue);
+  border-color: var(--c-blue);
+  animation: pip-pop 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.scorepips--b .scorepips__dots i.is-won {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+  animation: pip-pop 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes pip-pop {
+  0% {
+    transform: scale(0.4);
+  }
+  60% {
+    transform: scale(1.45);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ---- Stage & board ---- */
+.game__stage {
+  flex: 1;
+  display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  padding: 0 var(--space-md) var(--space-sm);
+  min-height: 0;
 }
-.seat__cards {
-  display: flex;
-  gap: 4px;
+.board {
+  position: relative;
+  width: min(88vw, 64vh, 620px);
+  aspect-ratio: 1 / 0.96;
+  animation: board-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
-.seat--left .seat__cards,
-.seat--right .seat__cards {
-  flex-direction: column;
+@keyframes board-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
-.seat.is-active {
-  filter: drop-shadow(0 0 10px rgba(224, 118, 79, 0.9));
-}
-.seat.is-offline {
-  opacity: 0.45;
+.board__art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 22px 44px rgba(23, 53, 82, 0.22));
+  pointer-events: none;
+  user-select: none;
 }
 
-/* ---- Trick area (cross layout) ---- */
+/* ---- Opponent seats ---- */
+.oseat {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+  transition: opacity 0.3s ease;
+}
+.oseat--top {
+  top: 2.5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 240px;
+  height: 96px;
+}
+.oseat--left {
+  left: 3.5%;
+  top: 50%;
+  transform: translateY(-58%);
+  width: 110px;
+  height: 250px;
+}
+.oseat--right {
+  right: 3.5%;
+  top: 50%;
+  transform: translateY(-58%);
+  width: 110px;
+  height: 250px;
+}
+.oseat.is-offline .oseat__fan {
+  opacity: 0.4;
+}
+
+.oseat__fan {
+  grid-area: 1 / 1;
+  display: flex;
+  justify-content: center;
+}
+.oseat--left .oseat__fan {
+  transform: rotate(90deg);
+}
+.oseat--right .oseat__fan {
+  transform: rotate(-90deg);
+}
+.oseat__slot {
+  display: block;
+  margin: 0 -11px;
+  transform-origin: 50% 160%;
+  transform: rotate(var(--rot));
+}
+
+/* name plates */
+.plate {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(23, 53, 82, 0.78);
+  color: #f6efdf;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  max-width: 170px;
+  z-index: 2;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.plate__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.plate::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.plate--a::before {
+  background: #7fb1d6;
+}
+.plate--b::before {
+  background: #f0a384;
+}
+.plate__count {
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: rgba(250, 245, 234, 0.18);
+  border-radius: 999px;
+  padding: 1px 7px;
+}
+.plate__offline {
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f0c5ae;
+}
+.plate__turndot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-gold-light);
+  animation: turndot 1.1s ease-in-out infinite;
+}
+@keyframes turndot {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+.oseat--top .plate {
+  transform: translateY(58px);
+}
+.oseat--left .plate,
+.oseat--right .plate {
+  transform: translateY(142px);
+}
+.oseat.is-active .plate {
+  border-color: var(--c-gold);
+  box-shadow: 0 0 0 3px rgba(199, 165, 103, 0.28), 0 4px 14px rgba(23, 53, 82, 0.3);
+}
+
+/* ---- Trick area (center cross) ---- */
 .trick {
-  width: 180px;
-  height: 150px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -52%);
+  width: 44%;
+  aspect-ratio: 1.3 / 1;
+  --tw: clamp(48px, 8.4vw, 60px);
+  z-index: 1;
+}
+.trick .card {
+  --card-w: var(--tw);
+  --card-h: calc(var(--tw) * 1.44);
 }
 .trick__card {
   position: absolute;
+  animation: trick-place 0.34s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
-.trick__card--bottom {
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+@keyframes trick-place {
+  from {
+    opacity: 0;
+    transform: translate(var(--fx, 0), var(--fy, 0)) rotate(var(--fr, 0deg)) scale(1.08);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0) rotate(var(--r, 0deg));
+  }
 }
 .trick__card--top {
   top: 0;
   left: 50%;
-  transform: translateX(-50%);
+  margin-left: calc(var(--tw) * -0.5);
+  --fx: 0px;
+  --fy: -90px;
+  --fr: -7deg;
+  --r: 1.5deg;
+}
+.trick__card--bottom {
+  bottom: 0;
+  left: 50%;
+  margin-left: calc(var(--tw) * -0.5);
+  --fx: 0px;
+  --fy: 90px;
+  --fr: 5deg;
+  --r: -1deg;
 }
 .trick__card--left {
   left: 0;
   top: 50%;
-  transform: translateY(-50%);
+  margin-top: calc(var(--tw) * -0.72);
+  --fx: -110px;
+  --fy: 0px;
+  --fr: -9deg;
+  --r: -4deg;
 }
 .trick__card--right {
   right: 0;
   top: 50%;
-  transform: translateY(-50%);
+  margin-top: calc(var(--tw) * -0.72);
+  --fx: 110px;
+  --fy: 0px;
+  --fr: 9deg;
+  --r: 4deg;
+}
+.trick__card {
+  transform: rotate(var(--r, 0deg));
+}
+.trick__card.is-winner .card {
+  box-shadow: 0 0 0 3px var(--c-gold), 0 12px 26px rgba(23, 53, 82, 0.3);
+}
+.trick__card.is-winner {
+  animation: winner-pop 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.05s;
+  z-index: 2;
+}
+@keyframes winner-pop {
+  0% {
+    transform: rotate(var(--r, 0deg)) scale(1);
+  }
+  55% {
+    transform: rotate(var(--r, 0deg)) scale(1.12);
+  }
+  100% {
+    transform: rotate(var(--r, 0deg)) scale(1);
+  }
 }
 
-/* ---- Player hand interactivity ---- */
+/* sweep all four cards toward the winner once the result has sunk in */
+.trick--sweep-top .trick__card {
+  --sx: 0px;
+  --sy: -46vh;
+}
+.trick--sweep-bottom .trick__card {
+  --sx: 0px;
+  --sy: 40vh;
+}
+.trick--sweep-left .trick__card {
+  --sx: -44vw;
+  --sy: 0px;
+}
+.trick--sweep-right .trick__card {
+  --sx: 44vw;
+  --sy: 0px;
+}
+.trick--done .trick__card {
+  animation: trick-sweep 0.5s cubic-bezier(0.55, 0, 0.8, 0.4) 1.15s forwards;
+}
+.trick--done .trick__card.is-winner {
+  animation: winner-pop 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.05s,
+    trick-sweep 0.5s cubic-bezier(0.55, 0, 0.8, 0.4) 1.15s forwards;
+}
+@keyframes trick-sweep {
+  to {
+    opacity: 0;
+    transform: translate(var(--sx, 0), var(--sy, 0)) rotate(var(--r, 0deg)) scale(0.5);
+  }
+}
+
+.trick__banner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--c-ink);
+  color: #f6efdf;
+  font-weight: 700;
+  font-size: 0.92rem;
+  padding: 8px 18px;
+  border-radius: 999px;
+  white-space: nowrap;
+  box-shadow: 0 10px 26px rgba(23, 53, 82, 0.35);
+  animation: banner-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.25s backwards;
+  z-index: 3;
+}
+.trick__banner--a {
+  background: var(--c-blue);
+}
+.trick__banner--b {
+  background: var(--c-accent);
+}
+@keyframes banner-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* ---- My hand ---- */
+.my-area {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: calc(var(--card-h) * -0.62);
+  z-index: 3;
+}
+.turn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--c-ink);
+  color: #f6efdf;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 7px 18px;
+  border-radius: 999px;
+  box-shadow: 0 8px 22px rgba(23, 53, 82, 0.3);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+}
+.turn-pill::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-gold-light);
+  animation: turndot 1.1s ease-in-out infinite;
+}
+.turn-pill.is-on {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hand {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-sm) var(--space-md) 0;
+}
 .hand-card {
-  transition: transform 0.12s;
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  position: relative;
+  margin: 0 calc(var(--card-w) * -0.27);
+  transform-origin: 50% 430%;
+  transform: rotate(var(--rot));
+  transition: transform 0.18s ease, filter 0.18s ease, opacity 0.18s ease;
+  animation: deal-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: calc(var(--i) * 45ms);
+  cursor: default;
+}
+@keyframes deal-in {
+  from {
+    opacity: 0;
+    transform: translateY(70px) rotate(var(--rot));
+  }
+}
+.hand-card .card {
+  transition: box-shadow 0.18s ease;
 }
 .hand-card.is-playable {
   cursor: pointer;
 }
-.hand-card.is-dim {
-  opacity: 0.4;
-  filter: grayscale(0.5);
+.hand-card.is-playable .card {
+  box-shadow: var(--sh-card), 0 0 0 2px rgba(199, 165, 103, 0.55);
+}
+.hand-card.is-playable:hover,
+.hand-card.is-playable:focus-visible {
+  transform: rotate(var(--rot)) translateY(-16px);
+  z-index: 6;
+}
+.hand-card.is-playable:hover .card,
+.hand-card.is-playable:focus-visible .card {
+  box-shadow: 0 16px 30px rgba(23, 53, 82, 0.3), 0 0 0 2px var(--c-gold);
+}
+.hand-card.is-locked {
+  filter: saturate(0.45) brightness(0.92);
+  opacity: 0.75;
+}
+.hand-card:focus-visible {
+  outline: none;
 }
 
-/* ---- Declare overlay ---- */
-.declare-overlay,
+/* ---- Declare dock ---- */
+.declare-dock {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--card-h, 92px) * 1.3 + 56px);
+  transform: translateX(-50%);
+  width: min(440px, calc(100vw - 32px));
+  text-align: center;
+  background: var(--c-surface);
+  border: 1px solid var(--c-gold-soft);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-lg);
+  padding: var(--space-lg) var(--space-lg) var(--space-lg);
+  z-index: 10;
+  animation: dock-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+@keyframes dock-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(14px);
+  }
+}
+.declare-dock__title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: var(--c-ink);
+  margin: 0 0 4px;
+}
+.declare-dock__sub {
+  color: var(--c-ink-soft);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin: 0 0 var(--space-md);
+}
+.declare-dock__suits {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-xs);
+}
+.declare-dock__suit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 6px 10px;
+  border-radius: var(--r-md);
+  border: 1.5px solid var(--c-surface-line);
+  background: #fff;
+  font-weight: 600;
+  font-size: 0.78rem;
+  color: var(--c-ink);
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.declare-dock__suit:hover {
+  border-color: var(--c-gold);
+  transform: translateY(-2px);
+  box-shadow: var(--sh-md);
+}
+.declare-dock__glyph {
+  font-size: 1.7rem;
+  line-height: 1.1;
+}
+.declare-dock__suit--hearts .declare-dock__glyph,
+.declare-dock__suit--diamonds .declare-dock__glyph {
+  color: var(--c-suit-red);
+}
+
+/* ---- Error toast ---- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--card-h, 92px) * 1.3 + 24px);
+  transform: translateX(-50%);
+  background: #fdf3ec;
+  border: 1px solid rgba(224, 118, 79, 0.55);
+  color: #a4431f;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 10px 20px;
+  border-radius: var(--r-md);
+  box-shadow: var(--sh-md);
+  z-index: 30;
+  animation: toast-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+}
+
+/* ---- Overlays & end card ---- */
 .modal-overlay {
   position: fixed;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(23, 53, 82, 0.55);
+  background: rgba(23, 53, 82, 0.58);
   z-index: 20;
+  padding: var(--space-md);
 }
 .modal-overlay--soft {
   background: rgba(23, 53, 82, 0.4);
 }
-.declare {
-  padding: 28px;
-  text-align: center;
-}
-.declare__title {
-  margin: 0 0 18px;
-  font-family: 'Fraunces', serif;
-  color: #173552;
-}
-.declare__suits {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-.declare__suit {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 16px 24px;
-  border-radius: 12px;
-  border: 2px solid rgba(23, 53, 82, 0.15);
-  background: #fff;
-  cursor: pointer;
-  font-weight: 600;
-  color: #173552;
-}
-.declare__suit:hover {
-  border-color: #2f6f9e;
-}
-.declare__glyph {
-  font-size: 2rem;
-}
-.declare__suit--hearts .declare__glyph,
-.declare__suit--diamonds .declare__glyph {
-  color: #c0492b;
-}
-
-/* ---- Modals ---- */
 .modal {
   padding: 32px;
   text-align: center;
-  width: min(420px, 90%);
+  width: min(420px, 100%);
 }
 .modal__title {
-  font-family: 'Fraunces', serif;
-  color: #173552;
+  font-family: var(--font-display);
+  color: var(--c-ink);
   margin: 0 0 8px;
 }
 .modal__sub {
-  color: #5a6b7a;
+  color: var(--c-ink-soft);
   margin: 0 0 20px;
 }
 .modal__actions {
@@ -410,6 +919,111 @@
   gap: 12px;
   justify-content: center;
 }
+
+.endcard {
+  position: relative;
+  padding: 40px 36px 32px;
+  text-align: center;
+  width: min(460px, 100%);
+}
+.endcard--won {
+  border-color: var(--c-gold);
+}
+.endcard__kicker {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+  margin-bottom: 6px;
+}
+.endcard--won .endcard__kicker {
+  color: var(--c-accent);
+}
+.endcard__title {
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  line-height: 1.1;
+  color: var(--c-ink);
+  margin: 0 0 10px;
+}
+.endcard__sub {
+  color: var(--c-ink-soft);
+  font-size: 0.95rem;
+  margin: 0 0 22px;
+}
+.endcard__votes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-xs);
+  margin-bottom: 22px;
+}
+.votechip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--c-muted);
+  background: var(--c-paper-2);
+  border: 1px solid var(--c-surface-line);
+  border-radius: 999px;
+  padding: 4px 12px;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+.votechip.is-in {
+  color: #226b43;
+  background: #e9f3e9;
+  border-color: #bcd9bf;
+}
+.endcard__actions {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.endcard__actions .btn:disabled {
+  opacity: 0.75;
+  cursor: default;
+  transform: none;
+}
+
+/* confetti — suit glyphs drifting down behind the end card */
+.confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 19;
+}
+.confetti__bit {
+  position: absolute;
+  top: -36px;
+  animation: confetti-fall linear infinite backwards;
+  will-change: transform;
+}
+.confetti__bit--0 {
+  color: var(--c-gold);
+}
+.confetti__bit--1 {
+  color: var(--c-accent);
+}
+.confetti__bit--2 {
+  color: var(--c-blue);
+}
+@keyframes confetti-fall {
+  from {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(110vh) rotate(420deg);
+    opacity: 0.7;
+  }
+}
+
 .spinner {
   width: 34px;
   height: 34px;
@@ -418,6 +1032,12 @@
   border-top-color: #2f6f9e;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
+}
+.spinner--sm {
+  width: 22px;
+  height: 22px;
+  border-width: 2.5px;
+  margin-bottom: 10px;
 }
 @keyframes spin {
   to {
@@ -439,14 +1059,85 @@
 .home-panel,
 .lobby-live,
 .modal,
-.declare {
+.endcard {
   animation: rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+/* ---- Small screens ---- */
+@media (max-width: 700px) {
+  .game {
+    --card-w: clamp(42px, 11vw, 54px);
+  }
+  .game__bar {
+    padding: var(--space-xs) var(--space-sm);
+  }
+  .suitbadge__text small {
+    display: none;
+  }
+  .scoreboard {
+    padding: 5px 9px;
+    gap: var(--space-xs);
+  }
+  .board {
+    width: min(94vw, 58vh);
+  }
+  .oseat--top {
+    width: 180px;
+    height: 72px;
+  }
+  .oseat--left,
+  .oseat--right {
+    width: 84px;
+    height: 200px;
+  }
+  .oseat--top .plate {
+    transform: translateY(44px);
+  }
+  .oseat--left .plate,
+  .oseat--right .plate {
+    transform: translateY(104px);
+  }
+  .plate {
+    font-size: 0.7rem;
+    padding: 3px 9px;
+    max-width: 120px;
+  }
+  .oseat .card.card--xs {
+    --card-w: 26px;
+    --card-h: 38px;
+  }
+  .oseat__slot {
+    margin: 0 -8px;
+  }
+  .trick {
+    width: 52%;
+    --tw: clamp(42px, 11vw, 52px);
+  }
+  .declare-dock {
+    bottom: calc(var(--card-h, 78px) * 1.2 + 40px);
+    padding: var(--space-md);
+  }
+  .declare-dock__suits {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .home-panel,
   .lobby-live,
   .modal,
-  .declare {
+  .endcard,
+  .board,
+  .hand-card,
+  .trick__card,
+  .trick__banner,
+  .declare-dock,
+  .toast,
+  .confetti__bit {
+    animation: none !important;
+  }
+  .turn-pill::before,
+  .plate__turndot {
     animation: none;
   }
 }

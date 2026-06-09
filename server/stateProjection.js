@@ -36,5 +36,6 @@ export function projectStateFor(room, playerId) {
     players,
     teams: { A: { tricks: room.teams.A.tricks }, B: { tricks: room.teams.B.tricks } },
     winner: room.winner,
+    rematchVotes: room._rematchVotes ? [...room._rematchVotes] : [],
   }
 }

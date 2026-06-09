@@ -18,16 +18,25 @@ type CardFaceProps = {
   rotate?: number
   /** lift the card up on hover (player's own hand) */
   raise?: boolean
+  className?: string
+  style?: React.CSSProperties
 }
 
 /** A face-up playing card with corner indices and a large center pip. */
-export function CardFace({ rank, suit, rotate = 0, raise = false }: CardFaceProps) {
+export function CardFace({
+  rank,
+  suit,
+  rotate = 0,
+  raise = false,
+  className = '',
+  style,
+}: CardFaceProps) {
   const colorClass = isRed(suit) ? 'card--red' : 'card--black'
   const glyph = SUIT_GLYPH[suit]
   return (
     <div
-      className={`card card-face ${colorClass} ${raise ? 'card--raise' : ''}`}
-      style={{ '--rot': `${rotate}deg` } as React.CSSProperties}
+      className={`card card-face ${colorClass} ${raise ? 'card--raise' : ''} ${className}`}
+      style={{ '--rot': `${rotate}deg`, ...style } as React.CSSProperties}
     >
       <span className="card-face__corner card-face__corner--tl">
         <span className="card-face__rank">{rank}</span>

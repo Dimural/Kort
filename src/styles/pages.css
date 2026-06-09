@@ -217,7 +217,7 @@
 }
 
 /* ==========================================================================
-   GAME TABLE
+   GAME TABLE — page shell (board styles live in game.css)
    ========================================================================== */
 .table-page {
   min-height: 100vh;
@@ -226,64 +226,6 @@
   justify-content: center;
   padding: clamp(48px, 6vw, 72px) 20px;
   position: relative;
-}
-.table-page__back {
-  position: absolute;
-  top: 24px;
-  left: 24px;
-  z-index: 6;
-}
-.felt {
-  position: relative;
-  width: min(820px, 100%);
-  aspect-ratio: 1.46 / 1;
-  background: url('/assets/table-felt.png') center / 100% 100% no-repeat;
-  filter: drop-shadow(0 22px 44px rgba(23, 53, 82, 0.20));
-}
-
-.seat {
-  position: absolute;
-  display: flex;
-}
-.seat--top {
-  top: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  gap: 6px;
-}
-.seat--bottom {
-  bottom: 7%;
-  left: 50%;
-  transform: translateX(-50%);
-  gap: 0;
-  padding: 0 18px;
-}
-.seat--bottom .card {
-  margin: 0 -8px;
-}
-.seat--left {
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  flex-direction: column;
-  gap: 6px;
-}
-.seat--right {
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  flex-direction: column;
-  gap: 6px;
-}
-
-.trick {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -55%);
-  display: flex;
-  gap: 14px;
-  align-items: center;
 }
 
 /* ==========================================================================

@@ -1,6 +1,14 @@
 import { useSyncExternalStore } from 'react'
 import { socket } from '../socket/socket'
 import type { ClientState, Suit, TeamId, TrickCompletePayload } from '../game/types'
+import {
+  sndCardPlay,
+  sndGameLost,
+  sndGameWon,
+  sndTrickLost,
+  sndTrickWon,
+  sndYourTurn,
+} from '../sound/sounds'
 
 interface StoreState {
   connected: boolean
@@ -61,6 +69,22 @@ socket.on('room_joined', ({ roomCode, playerId }: { roomCode: string; playerId: 
 })
 
 socket.on('state', (game: ClientState) => {
+  const prev = state.game
+
+  // Sound cues derived from state transitions (display-only).
+  if (prev && prev.roomCode === game.roomCode) {
+    const prevPlays = prev.currentTrick?.plays.length ?? 0
+    const nowPlays = game.currentTrick?.plays.length ?? 0
+    if (game.phase === 'play' && nowPlays > prevPlays) sndCardPlay()
+    if (
+      game.phase === 'play' &&
+      game.currentTurn === game.myPlayerId &&
+      prev.currentTurn !== prev.myPlayerId
+    ) {
+      sndYourTurn()
+    }
+  }
+
   set({
     game,
     roomCode: game.roomCode,
@@ -71,9 +95,29 @@ socket.on('state', (game: ClientState) => {
   })
 })
 
-socket.on('trick_complete', (payload: TrickCompletePayload) => set({ trickOverlay: payload }))
-socket.on('game_over', (payload: StoreState['gameOver']) => set({ gameOver: payload }))
-socket.on('error_msg', ({ message }: { message: string }) => set({ error: message }))
+socket.on('error_msg', ({ message }: { message: string }) => {
+  // A failed rejoin (room expired / server restarted) would otherwise leave the
+  // player stuck on "Reconnecting…" — fall back to the home screen instead.
+  if (state.game === null && state.roomCode !== null) {
+    clearIdentity()
+    set({ roomCode: null, playerId: null, error: 'That game has ended.' })
+    return
+  }
+  set({ error: message })
+})
+
+socket.on('trick_complete', (payload: TrickCompletePayload) => {
+  const myTeam = state.game?.players.find((p) => p.playerId === state.game?.myPlayerId)?.teamId
+  if (myTeam) (payload.winnerTeam === myTeam ? sndTrickWon : sndTrickLost)()
+  set({ trickOverlay: payload })
+})
+socket.on('game_over', (payload: StoreState['gameOver']) => {
+  const myTeam = state.game?.players.find((p) => p.playerId === state.game?.myPlayerId)?.teamId
+  if (payload && !payload.abandoned && myTeam) {
+    ;(payload.winnerTeam === myTeam ? sndGameWon : sndGameLost)()
+  }
+  set({ gameOver: payload })
+})
 socket.on('player_disconnected', (p: { playerId: number; displayName: string }) =>
   set({ disconnectedPlayer: p }),
 )

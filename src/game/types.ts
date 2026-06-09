@@ -45,6 +45,8 @@ export interface ClientState {
   players: PlayerView[]
   teams: { A: { tricks: number }; B: { tricks: number } }
   winner: TeamId | null
+  /** playerIds who voted to play again (only meaningful in the end phase) */
+  rematchVotes?: number[]
 }
 
 export interface TrickCompletePayload {
