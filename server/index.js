@@ -1,5 +1,8 @@
 // Express + Socket.io setup. Wires client events to the (tested) game managers.
 import { createServer } from 'node:http'
+import { existsSync } from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import express from 'express'
 import { Server } from 'socket.io'
 import { RoomManager } from './roomManager.js'
@@ -12,6 +15,17 @@ const RECONNECT_TIMEOUT_MS = Number(process.env.RECONNECT_TIMEOUT_MS ?? 60_000)
 
 const app = express()
 app.get('/health', (_req, res) => res.json({ ok: true }))
+
+// Serve the built frontend (if present) so one server runs the whole game
+// in production. `npm run build` then `npm run server`.
+const distDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'dist')
+if (existsSync(distDir)) {
+  app.use(express.static(distDir))
+  app.use((req, res, next) => {
+    if (req.method !== 'GET' || req.path.startsWith('/socket.io')) return next()
+    res.sendFile(path.join(distDir, 'index.html'))
+  })
+}
 
 const httpServer = createServer(app)
 const io = new Server(httpServer, { cors: { origin: '*' } })

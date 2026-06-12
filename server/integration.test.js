@@ -7,6 +7,8 @@ import { io as Client } from 'socket.io-client'
 
 process.env.PORT = '3999'
 process.env.TRICK_PAUSE_MS = '5'
+// Keep post-test disconnect timers from holding the process open for 60s.
+process.env.RECONNECT_TIMEOUT_MS = '50'
 const { httpServer, io } = await import('./index.js') // starts listening on 3999
 const URL = 'http://localhost:3999'
 
@@ -65,9 +67,12 @@ test('four clients play a full game to a winner with no hand leakage', async () 
   }
 
   // Everyone readies up -> game auto-starts, declare fires, play runs to the end.
+  // Wait for the game_over event AND for the final state broadcast to land
+  // (it follows game_over by TRICK_PAUSE_MS, so polling on the event alone races).
   const done = new Promise((resolve) => {
     const check = setInterval(() => {
-      if (winnerTeam) {
+      const anyState = Object.values(latest)[0]
+      if (winnerTeam && anyState && anyState.teams[winnerTeam].tricks >= 7) {
         clearInterval(check)
         resolve()
       }
