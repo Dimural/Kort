@@ -20,6 +20,21 @@ const STATS: { value: string; label: string }[] = [
   { value: '~15 min', label: 'A game' },
 ]
 
+const STEPS: { title: string; body: string }[] = [
+  {
+    title: 'Call the game',
+    body: 'Each player starts with five cards. One of them names the game suit — the trump that outranks every other card.',
+  },
+  {
+    title: 'Follow suit',
+    body: 'Hands grow to thirteen and tricks begin. Follow the suit that was led; out of it, cut with a trump or throw a card away.',
+  },
+  {
+    title: 'Race to seven',
+    body: 'The highest trump — or the highest card of the led suit — takes the trick. The first team to seven tricks wins the game.',
+  },
+]
+
 export function LandingPage() {
   return (
     <div className="landing">
@@ -53,6 +68,9 @@ export function LandingPage() {
             <Link to="/play" className="btn btn-accent">
               Play Now
             </Link>
+            <a href="#how-to-play" className="btn btn-ghost">
+              How to play
+            </a>
           </div>
         </div>
 
@@ -75,6 +93,28 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* ---- How to play ---- */}
+      <section className="container howto" id="how-to-play">
+        <div className="howto__panel panel">
+          <h2 className="howto__title">How Kort is played</h2>
+          <ol className="howto__steps">
+            {STEPS.map((step, i) => (
+              <li key={step.title} className="howto__step">
+                <span className="howto__num" aria-hidden="true">
+                  {i + 1}
+                </span>
+                <h3 className="howto__step-title">{step.title}</h3>
+                <p className="howto__step-body">{step.body}</p>
+              </li>
+            ))}
+          </ol>
+          <div className="howto__cta">
+            <Link to="/play" className="btn btn-accent">
+              Gather your four
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

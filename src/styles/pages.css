@@ -217,6 +217,76 @@
 }
 
 /* ==========================================================================
+   LANDING — HOW TO PLAY
+   ========================================================================== */
+.landing > .howto {
+  position: relative;
+  z-index: 1;
+}
+.howto {
+  padding-bottom: clamp(64px, 9vw, 128px);
+  scroll-margin-top: 24px;
+}
+.howto__panel {
+  padding: clamp(32px, 5vw, 56px) clamp(24px, 5vw, 64px) clamp(28px, 4vw, 48px);
+}
+.howto__title {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  text-align: center;
+  margin-bottom: clamp(28px, 4vw, 44px);
+}
+.howto__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(24px, 4vw, 48px);
+}
+.howto__step {
+  text-align: left;
+}
+.howto__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid var(--c-gold);
+  color: var(--c-gold);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: var(--space-sm);
+}
+.howto__step-title {
+  font-size: 1.12rem;
+  margin-bottom: var(--space-2xs);
+}
+.howto__step-body {
+  color: var(--c-ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  max-width: 38ch;
+}
+.howto__cta {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(28px, 4vw, 44px);
+}
+
+@media (max-width: 880px) {
+  .howto__steps {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .howto__step-body {
+    max-width: 56ch;
+  }
+}
+
+/* ==========================================================================
    GAME TABLE — page shell (board styles live in game.css)
    ========================================================================== */
 .table-page {
