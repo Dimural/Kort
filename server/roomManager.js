@@ -146,7 +146,8 @@ export class RoomManager {
       const idx = room.players.findIndex((p) => p.socketId === socketId)
       if (idx === -1) continue
       room.players.splice(idx, 1)
-      if (room.players.length === 0) {
+      const humansLeft = room.players.some((p) => !p.isBot)
+      if (room.players.length === 0 || !humansLeft) {
         this.rooms.delete(room.roomCode)
         return room
       }
@@ -157,6 +158,8 @@ export class RoomManager {
   }
 
   _resetReady(room) {
-    room.players.forEach((p) => (p.isReady = false))
+    room.players.forEach((p) => {
+      if (!p.isBot) p.isReady = false
+    })
   }
 }

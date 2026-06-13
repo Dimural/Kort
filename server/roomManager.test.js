@@ -147,3 +147,12 @@ test('removeBot ignores a non-bot playerId', () => {
   rm.removeBot('AAAAAA', 0) // player 0 is human
   assert.equal(room.players.length, 1)
 })
+
+test('removeBySocket destroys the room when only bots remain', () => {
+  const rm = new RoomManager({ generateCode: fixedCodes() })
+  rm.createRoom({ displayName: 'Alice', socketId: 's1' }) // human, team A
+  rm.addBot('AAAAAA', 'B', 'easy')
+  rm.addBot('AAAAAA', 'B', 'easy')
+  rm.removeBySocket('s1') // last human leaves
+  assert.equal(rm.getRoom('AAAAAA'), undefined)
+})
