@@ -56,6 +56,41 @@ function maybeStart(room) {
   }
 }
 
+// Broadcast the result of a completed (or in-progress) play. Shared by the
+// human play_card handler and the bot driver so both resolve tricks identically.
+function resolvePlay(room, result) {
+  if (!result.trickComplete) {
+    broadcastState(room)
+    return
+  }
+  const completed = room.trickHistory[room.trickHistory.length - 1]
+  io.to(room.roomCode).emit('trick_complete', {
+    plays: completed.plays,
+    ledSuit: completed.ledSuit,
+    winnerId: result.winnerId,
+    winnerTeam: result.winnerTeam,
+    teamTricks: result.teamTricks,
+    nextLeaderId: result.nextLeaderId ?? null,
+  })
+  if (result.gameOver) {
+    io.to(room.roomCode).emit('game_over', { winnerTeam: result.winnerTeam, teamTricks: result.teamTricks })
+  }
+  setTimeout(() => broadcastState(room), TRICK_PAUSE_MS)
+}
+
+// Record a play-again vote; restart once everyone (humans + bots) has voted.
+function castRematchVote(room, playerId) {
+  if (!room || room.phase !== 'end') return
+  room._rematchVotes = room._rematchVotes || new Set()
+  room._rematchVotes.add(playerId)
+  if (room._rematchVotes.size === room.players.length) {
+    room._rematchVotes = null
+    resetForRematch(room)
+    io.to(room.roomCode).emit('game_caller_selected', { playerId: room.gameCallerId })
+  }
+  broadcastState(room)
+}
+
 // --- socket handlers ---
 
 io.on('connection', (socket) => {
@@ -118,27 +153,7 @@ io.on('connection', (socket) => {
     if (!room) return
     try {
       const result = playCard(room, playerId, cardId)
-
-      if (!result.trickComplete) {
-        broadcastState(room)
-        return
-      }
-
-      // Trick finished — let the 4 cards linger before clearing.
-      const completed = room.trickHistory[room.trickHistory.length - 1]
-      io.to(room.roomCode).emit('trick_complete', {
-        plays: completed.plays,
-        ledSuit: completed.ledSuit,
-        winnerId: result.winnerId,
-        winnerTeam: result.winnerTeam,
-        teamTricks: result.teamTricks,
-        nextLeaderId: result.nextLeaderId ?? null,
-      })
-
-      if (result.gameOver) {
-        io.to(room.roomCode).emit('game_over', { winnerTeam: result.winnerTeam, teamTricks: result.teamTricks })
-      }
-      setTimeout(() => broadcastState(room), TRICK_PAUSE_MS)
+      resolvePlay(room, result)
     } catch (err) {
       emitError(socket, err.message)
     }
@@ -148,16 +163,7 @@ io.on('connection', (socket) => {
     const { roomCode } = socket.data || {}
     const room = rooms.getRoom(roomCode)
     if (!room || room.phase !== 'end') return
-    room._rematchVotes = room._rematchVotes || new Set()
-    room._rematchVotes.add(socket.data.playerId)
-    if (room._rematchVotes.size === room.players.length) {
-      room._rematchVotes = null
-      resetForRematch(room)
-      io.to(room.roomCode).emit('game_caller_selected', { playerId: room.gameCallerId })
-      broadcastState(room)
-    } else {
-      broadcastState(room)
-    }
+    castRematchVote(room, socket.data.playerId)
   })
 
   // Reconnect to an in-progress game using stored identity.
