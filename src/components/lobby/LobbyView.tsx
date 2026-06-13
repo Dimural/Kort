@@ -1,45 +1,77 @@
+import { useState } from 'react'
 import { actions, useGameStore } from '../../store/gameStore'
-import type { ClientState, PlayerView, TeamId } from '../../game/types'
+import type { ClientState, Difficulty, PlayerView, TeamId } from '../../game/types'
 import { RoomCodeDisplay } from '../shared/RoomCodeDisplay'
 import { Ornament } from '../Ornament'
 
-function Slot({ player, isMe }: { player: PlayerView | undefined; isMe: boolean }) {
-  if (!player) {
-    return (
-      <div className="slot is-empty">
-        <span className="slot__avatar slot__avatar--empty" aria-hidden="true" />
-        <span className="slot__name slot__name--empty">
-          Waiting
-          <span className="slot__dots" aria-hidden="true">
-            <i />
-            <i />
-            <i />
-          </span>
-        </span>
-      </div>
-    )
-  }
+const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard']
+const DIFF_LABEL: Record<Difficulty, string> = { easy: 'Easy', medium: 'Medium', hard: 'Hard' }
+
+function AddBotSlot({ teamId }: { teamId: TeamId }) {
+  const [difficulty, setDifficulty] = useState<Difficulty>('medium')
   return (
-    <div className={`slot is-taken ${isMe ? 'is-me' : ''}`}>
+    <div className="slot is-empty slot--addbot">
+      <div className="slot__addbot-row">
+        <select
+          className="slot__diff"
+          value={difficulty}
+          onChange={(e) => setDifficulty(e.target.value as Difficulty)}
+          aria-label="Bot difficulty"
+        >
+          {DIFFICULTIES.map((d) => (
+            <option key={d} value={d}>
+              {DIFF_LABEL[d]}
+            </option>
+          ))}
+        </select>
+        <button
+          type="button"
+          className="slot__addbot-btn"
+          onClick={() => actions.addBot(teamId, difficulty)}
+        >
+          + Add bot
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function Slot({ player, isMe }: { player: PlayerView; isMe: boolean }) {
+  return (
+    <div className={`slot is-taken ${isMe ? 'is-me' : ''} ${player.isBot ? 'slot--bot' : ''}`}>
       <span className="slot__avatar" aria-hidden="true">
         {player.displayName.charAt(0).toUpperCase()}
       </span>
       <span className="slot__name">
         {player.displayName}
         {isMe && <em> (you)</em>}
-      </span>
-      <span className={`slot__ready ${player.isReady ? 'is-ready' : ''}`}>
-        {player.isReady ? (
-          <>
-            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 6 9 17l-5-5" />
-            </svg>
-            Ready
-          </>
-        ) : (
-          'Not ready'
+        {player.isBot && (
+          <span className="slot__botbadge">BOT · {DIFF_LABEL[player.difficulty ?? 'medium']}</span>
         )}
       </span>
+      {player.isBot ? (
+        <button
+          type="button"
+          className="slot__remove"
+          aria-label={`Remove ${player.displayName}`}
+          onClick={() => actions.removeBot(player.playerId)}
+        >
+          ✕
+        </button>
+      ) : (
+        <span className={`slot__ready ${player.isReady ? 'is-ready' : ''}`}>
+          {player.isReady ? (
+            <>
+              <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+              Ready
+            </>
+          ) : (
+            'Not ready'
+          )}
+        </span>
+      )}
     </div>
   )
 }
@@ -55,21 +87,24 @@ function TeamPanel({ game, teamId }: { game: ClientState; teamId: TeamId }) {
       className={`teampanel teampanel--${teamId.toLowerCase()} ${
         mine?.teamId === teamId ? 'is-own' : ''
       } ${canJoin ? 'is-joinable' : ''}`}
-      onClick={() => canJoin && actions.selectTeam(teamId)}
-      role={canJoin ? 'button' : undefined}
-      tabIndex={canJoin ? 0 : undefined}
-      onKeyDown={(e) => {
-        if (canJoin && (e.key === 'Enter' || e.key === ' ')) {
-          e.preventDefault()
-          actions.selectTeam(teamId)
-        }
-      }}
     >
       <h3 className="teampanel__name">Team {teamId}</h3>
-      {[0, 1].map((slot) => (
-        <Slot key={slot} player={members[slot]} isMe={members[slot]?.playerId === game.myPlayerId} />
-      ))}
-      {canJoin && <span className="teampanel__hint">Switch to this team</span>}
+      {[0, 1].map((slot) => {
+        const member = members[slot]
+        if (member) {
+          return <Slot key={slot} player={member} isMe={member.playerId === game.myPlayerId} />
+        }
+        return <AddBotSlot key={slot} teamId={teamId} />
+      })}
+      {canJoin && (
+        <button
+          type="button"
+          className="teampanel__switch"
+          onClick={() => actions.selectTeam(teamId)}
+        >
+          Switch to this team
+        </button>
+      )}
     </div>
   )
 }

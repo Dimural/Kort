@@ -2,6 +2,7 @@ export type Suit = 'spades' | 'hearts' | 'diamonds' | 'clubs'
 export type TeamId = 'A' | 'B'
 export type Position = 'bottom' | 'left' | 'top' | 'right'
 export type Phase = 'lobby' | 'declare' | 'play' | 'end'
+export type Difficulty = 'easy' | 'medium' | 'hard'
 
 export interface Card {
   id: string
@@ -18,6 +19,8 @@ export interface PlayerView {
   cardCount: number
   isConnected: boolean
   isReady: boolean
+  isBot: boolean
+  difficulty: Difficulty | null
 }
 
 export interface TrickPlay {

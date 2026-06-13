@@ -101,3 +101,58 @@ test('removing the last player destroys the room', () => {
   rm.removeBySocket('s1')
   assert.equal(rm.getRoom('AAAAAA'), undefined)
 })
+
+test('addBot adds a ready bot to a team with an open slot', () => {
+  const rm = new RoomManager({ generateCode: fixedCodes() })
+  const { room } = rm.createRoom({ displayName: 'Alice', socketId: 's1' }) // team A
+  const bot = rm.addBot('AAAAAA', 'B', 'medium')
+  assert.equal(bot.isBot, true)
+  assert.equal(bot.socketId, null)
+  assert.equal(bot.teamId, 'B')
+  assert.equal(bot.difficulty, 'medium')
+  assert.equal(bot.isReady, true)
+  assert.equal(bot.playerId, 1)
+  assert.equal(room.players.length, 2)
+})
+
+test('addBot refuses a full team and returns null', () => {
+  const rm = new RoomManager({ generateCode: fixedCodes() })
+  rm.createRoom({ displayName: 'Alice', socketId: 's1' }) // team A
+  rm.joinRoom({ roomCode: 'AAAAAA', displayName: 'Cara', socketId: 's3' }) // team B
+  rm.addBot('AAAAAA', 'A', 'easy') // fills A (Alice + bot)
+  const blocked = rm.addBot('AAAAAA', 'A', 'easy') // A is full
+  assert.equal(blocked, null)
+})
+
+test('addBot gives bots distinct names', () => {
+  const rm = new RoomManager({ generateCode: fixedCodes() })
+  rm.createRoom({ displayName: 'Alice', socketId: 's1' })
+  const b1 = rm.addBot('AAAAAA', 'B', 'easy')
+  const b2 = rm.addBot('AAAAAA', 'B', 'easy')
+  assert.notEqual(b1.displayName, b2.displayName)
+})
+
+test('removeBot removes a bot but leaves humans untouched', () => {
+  const rm = new RoomManager({ generateCode: fixedCodes() })
+  const { room } = rm.createRoom({ displayName: 'Alice', socketId: 's1' })
+  const bot = rm.addBot('AAAAAA', 'B', 'hard')
+  rm.removeBot('AAAAAA', bot.playerId)
+  assert.equal(room.players.length, 1)
+  assert.equal(room.players[0].displayName, 'Alice')
+})
+
+test('removeBot ignores a non-bot playerId', () => {
+  const rm = new RoomManager({ generateCode: fixedCodes() })
+  const { room } = rm.createRoom({ displayName: 'Alice', socketId: 's1' })
+  rm.removeBot('AAAAAA', 0) // player 0 is human
+  assert.equal(room.players.length, 1)
+})
+
+test('removeBySocket destroys the room when only bots remain', () => {
+  const rm = new RoomManager({ generateCode: fixedCodes() })
+  rm.createRoom({ displayName: 'Alice', socketId: 's1' }) // human, team A
+  rm.addBot('AAAAAA', 'B', 'easy')
+  rm.addBot('AAAAAA', 'B', 'easy')
+  rm.removeBySocket('s1') // last human leaves
+  assert.equal(rm.getRoom('AAAAAA'), undefined)
+})

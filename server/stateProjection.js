@@ -20,6 +20,8 @@ export function projectStateFor(room, playerId) {
       cardCount: p.hand ? p.hand.length : 0,
       isConnected: p.isConnected,
       isReady: p.isReady,
+      isBot: !!p.isBot,
+      difficulty: p.difficulty ?? null,
     }
   })
 

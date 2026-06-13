@@ -70,3 +70,21 @@ test('projection carries public game fields', () => {
   assert.equal(view.phase, 'play')
   assert.deepEqual(view.teams, { A: { tricks: 3 }, B: { tricks: 2 } })
 })
+
+test('projection includes isBot and difficulty for bot players', () => {
+  const room = {
+    roomCode: 'AAAAAA', phase: 'lobby', gameSuit: null, gameCallerId: null,
+    currentLeaderId: null, currentTurn: null, currentTrick: null, trickHistory: [],
+    winner: null, teams: { A: { tricks: 0 }, B: { tricks: 0 } },
+    players: [
+      { playerId: 0, displayName: 'Alice', teamId: 'A', seat: 0, hand: [], isConnected: true, isReady: false },
+      { playerId: 1, displayName: 'Aygul', teamId: 'B', seat: 1, hand: [], isConnected: true, isReady: true, isBot: true, difficulty: 'hard' },
+    ],
+  }
+  const view = projectStateFor(room, 0)
+  const me = view.players.find((p) => p.playerId === 0)
+  const bot = view.players.find((p) => p.playerId === 1)
+  assert.equal(me.isBot, false)
+  assert.equal(bot.isBot, true)
+  assert.equal(bot.difficulty, 'hard')
+})

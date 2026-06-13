@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { socket } from '../socket/socket'
-import type { ClientState, Suit, TeamId, TrickCompletePayload } from '../game/types'
+import type { ClientState, Suit, TeamId, TrickCompletePayload, Difficulty } from '../game/types'
 import {
   sndCardPlay,
   sndGameLost,
@@ -142,6 +142,9 @@ export const actions = {
   joinRoom: (roomCode: string, displayName: string) =>
     socket.emit('join_room', { roomCode, displayName }),
   selectTeam: (teamId: TeamId) => socket.emit('select_team', { teamId }),
+  addBot: (teamId: TeamId, difficulty: Difficulty) =>
+    socket.emit('add_bot', { teamId, difficulty }),
+  removeBot: (playerId: number) => socket.emit('remove_bot', { playerId }),
   toggleReady: () => socket.emit('player_ready', {}),
   declareSuit: (suit: Suit) => socket.emit('declare_game_suit', { suit }),
   playCard: (cardId: string) => socket.emit('play_card', { cardId }),
