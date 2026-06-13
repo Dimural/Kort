@@ -1326,3 +1326,83 @@
     animation: none;
   }
 }
+
+/* --- bot lobby slots --- */
+.slot--addbot {
+  align-items: stretch;
+  justify-content: center;
+}
+.slot__addbot-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+.slot__diff {
+  flex: 0 0 auto;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.25);
+  color: inherit;
+  font: inherit;
+  font-size: 0.82rem;
+}
+.slot__addbot-btn {
+  flex: 1 1 auto;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.slot__addbot-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+.slot__botbadge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: rgba(212, 175, 110, 0.22);
+  color: #e7c98a;
+  vertical-align: middle;
+}
+.slot__remove {
+  margin-left: auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.2);
+  color: inherit;
+  cursor: pointer;
+  line-height: 1;
+  font-size: 0.7rem;
+}
+.slot__remove:hover {
+  background: rgba(220, 80, 80, 0.35);
+  border-color: rgba(220, 80, 80, 0.6);
+}
+.teampanel__switch {
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.teampanel__switch:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
