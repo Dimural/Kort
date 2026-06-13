@@ -9,6 +9,11 @@ process.env.PORT = '3999'
 process.env.TRICK_PAUSE_MS = '5'
 // Keep post-test disconnect timers from holding the process open for 60s.
 process.env.RECONNECT_TIMEOUT_MS = '50'
+// Force Hard-bot declaration onto the offline heuristic (no Groq network call).
+// Empty string is "defined", so loadEnv() in index.js won't repopulate from .env.
+process.env.GROQ_API_KEY = ''
+// Bots act near-instantly in tests instead of the human-paced default.
+process.env.BOT_DELAY_MS = '1'
 const { httpServer, io } = await import('./index.js') // starts listening on 3999
 const URL = 'http://localhost:3999'
 
@@ -19,6 +24,61 @@ function legalCard(state) {
   const sameSuit = hand.filter((c) => c.suit === led)
   return (sameSuit.length ? sameSuit : hand)[0]
 }
+
+test('one human plus three bots play a full game with no hand leakage', async () => {
+  const human = Client(URL, { forceNew: true })
+  let myId = null
+  let over = null
+
+  human.on('state', (s) => {
+    // never see anyone else's hand
+    s.players.forEach((p) => assert.equal(p.hand, undefined))
+    if (s.phase === 'declare' && s.gameCallerId === s.myPlayerId) {
+      assert.equal(s.myHand.length, 5)
+      human.emit('declare_game_suit', { suit: 'spades' })
+    }
+    if (s.phase === 'play' && s.currentTurn === s.myPlayerId) {
+      const led = s.currentTrick?.ledSuit ?? null
+      const hand = s.myHand
+      const sameSuit = hand.filter((c) => c.suit === led)
+      const card = (led == null ? hand : sameSuit.length ? sameSuit : hand)[0]
+      human.emit('play_card', { cardId: card.id })
+    }
+  })
+  human.on('game_over', (p) => { over = p })
+
+  await new Promise((resolve) => {
+    human.on('connect', () => {
+      human.emit('create_room', { displayName: 'Solo' })
+      human.once('room_created', ({ playerId }) => {
+        myId = playerId
+        resolve()
+      })
+    })
+  })
+
+  // Fill the table: human is team A; add a bot teammate (A) and two opponents (B).
+  human.emit('add_bot', { teamId: 'A', difficulty: 'easy' })
+  human.emit('add_bot', { teamId: 'B', difficulty: 'medium' })
+  human.emit('add_bot', { teamId: 'B', difficulty: 'hard' })
+
+  const done = new Promise((resolve) => {
+    const check = setInterval(() => {
+      if (over && ['A', 'B'].includes(over.winnerTeam)) {
+        clearInterval(check)
+        resolve()
+      }
+    }, 10)
+  })
+  // Bots are auto-ready; the human readies to start.
+  human.emit('player_ready', {})
+
+  await done
+  assert.ok(['A', 'B'].includes(over.winnerTeam))
+  assert.equal(myId, 0)
+
+  human.close()
+})
 
 test('four clients play a full game to a winner with no hand leakage', async () => {
   const clients = []
