@@ -6,6 +6,7 @@ const defaultGenerateCode = customAlphabet(ALPHABET, 6)
 
 const MAX_PLAYERS = 4
 const TEAM_SIZE = 2
+const BOT_NAMES = ['Aygul', 'Tahir', 'Patime', 'Erkin', 'Gulnar', 'Memet']
 
 export class RoomManager {
   constructor({ generateCode = defaultGenerateCode } = {}) {
@@ -47,6 +48,44 @@ export class RoomManager {
     if (room.players.length >= MAX_PLAYERS) throw new Error('Room is full')
     const playerId = this._addPlayer(room, displayName, socketId)
     return { room, playerId }
+  }
+
+  addBot(roomCode, teamId, difficulty = 'medium') {
+    const room = this.rooms.get(roomCode)
+    if (!room || room.phase !== 'lobby') return null
+    if (room.players.length >= MAX_PLAYERS) return null
+    const onTeam = room.players.filter((p) => p.teamId === teamId).length
+    if (onTeam >= TEAM_SIZE) return null
+
+    const used = new Set(room.players.map((p) => p.playerId))
+    let playerId = 0
+    while (used.has(playerId)) playerId++
+
+    const takenNames = new Set(room.players.map((p) => p.displayName))
+    const name = BOT_NAMES.find((n) => !takenNames.has(n)) ?? `Bot ${playerId}`
+
+    const bot = {
+      playerId,
+      socketId: null,
+      displayName: name,
+      isBot: true,
+      difficulty,
+      teamId,
+      position: null,
+      hand: [],
+      isReady: true,
+      isConnected: true,
+    }
+    room.players.push(bot)
+    return bot
+  }
+
+  removeBot(roomCode, playerId) {
+    const room = this.rooms.get(roomCode)
+    if (!room || room.phase !== 'lobby') return
+    const idx = room.players.findIndex((p) => p.playerId === playerId && p.isBot)
+    if (idx === -1) return
+    room.players.splice(idx, 1)
   }
 
   _addPlayer(room, displayName, socketId) {
