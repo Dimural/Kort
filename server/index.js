@@ -5,9 +5,13 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import express from 'express'
 import { Server } from 'socket.io'
+import { loadEnv } from './loadEnv.js'
+loadEnv()
 import { RoomManager } from './roomManager.js'
 import { startGame, declareGameSuit, playCard, resetForRematch } from './gameManager.js'
 import { projectStateFor } from './stateProjection.js'
+import { createGroqClient } from './groqClient.js'
+import { createBotRunner } from './botDriver.js'
 
 const PORT = process.env.PORT || 3001
 const TRICK_PAUSE_MS = Number(process.env.TRICK_PAUSE_MS ?? 1800)
@@ -33,6 +37,17 @@ const io = new Server(httpServer, { cors: { origin: '*' } })
 const rooms = new RoomManager()
 const disconnectTimers = new Map() // roomCode:playerId -> timeout
 
+// Bot driver: declares + plays for in-process bot players. broadcastState,
+// resolvePlay and castRematchVote are hoisted function declarations below.
+const groq = createGroqClient()
+const botRunner = createBotRunner({
+  io,
+  broadcastState,
+  resolvePlay,
+  castRematchVote,
+  groq,
+})
+
 // --- helpers ---
 
 function broadcastState(room) {
@@ -53,6 +68,7 @@ function maybeStart(room) {
     io.to(room.roomCode).emit('game_starting', { countdown: 0 })
     io.to(room.roomCode).emit('game_caller_selected', { playerId: room.gameCallerId })
     broadcastState(room)
+    botRunner.run(room)
   }
 }
 
@@ -61,6 +77,7 @@ function maybeStart(room) {
 function resolvePlay(room, result) {
   if (!result.trickComplete) {
     broadcastState(room)
+    botRunner.run(room)
     return
   }
   const completed = room.trickHistory[room.trickHistory.length - 1]
@@ -75,7 +92,11 @@ function resolvePlay(room, result) {
   if (result.gameOver) {
     io.to(room.roomCode).emit('game_over', { winnerTeam: result.winnerTeam, teamTricks: result.teamTricks })
   }
-  setTimeout(() => broadcastState(room), TRICK_PAUSE_MS)
+  // Let the finished trick linger, then refresh and let any bot lead next.
+  setTimeout(() => {
+    broadcastState(room)
+    botRunner.run(room)
+  }, TRICK_PAUSE_MS)
 }
 
 // Record a play-again vote; restart once everyone (humans + bots) has voted.
@@ -89,6 +110,7 @@ function castRematchVote(room, playerId) {
     io.to(room.roomCode).emit('game_caller_selected', { playerId: room.gameCallerId })
   }
   broadcastState(room)
+  botRunner.run(room)
 }
 
 // --- socket handlers ---
@@ -121,6 +143,26 @@ io.on('connection', (socket) => {
     rooms.selectTeam(roomCode, playerId, teamId)
     const room = rooms.getRoom(roomCode)
     if (room) broadcastState(room)
+  })
+
+  socket.on('add_bot', ({ teamId, difficulty }) => {
+    const { roomCode } = socket.data || {}
+    if (!roomCode) return
+    const room = rooms.getRoom(roomCode)
+    if (!room || room.phase !== 'lobby') return
+    const level = ['easy', 'medium', 'hard'].includes(difficulty) ? difficulty : 'medium'
+    rooms.addBot(roomCode, teamId, level)
+    broadcastState(room)
+    maybeStart(room)
+  })
+
+  socket.on('remove_bot', ({ playerId }) => {
+    const { roomCode } = socket.data || {}
+    if (!roomCode) return
+    const room = rooms.getRoom(roomCode)
+    if (!room || room.phase !== 'lobby') return
+    rooms.removeBot(roomCode, playerId)
+    broadcastState(room)
   })
 
   socket.on('player_ready', () => {
